@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+        }
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        header {
+            background-color: #f2f2f2;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .bill-table th, .bill-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .bill-table th {
+            background-color: #f2f2f2;
+        }
+        .total-bill, .delivery-address, .payment-method {
+            margin-bottom: 20px;
+        }
+        .total-bill p, .delivery-address p, .payment-method p {
+            margin: 0;
+        }
+        .total-bill h3, .delivery-address h3, .payment-method h3 {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('cart') }}">Cart</a></li>
+            {% if session.username %}
+                <li style="float:right;"><a href="#">{{ session.username }}</a></li>
+                <li style="float:right;"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <header>
+        <h1>Order Details</h1>
+    </header>
+    
+    <div class="container">
+        <!-- Bill table -->
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in cart_items %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>${{ product.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Display total bill -->
+        <div class="total-bill">
+            <h3>Total Bill:</h3>
+            <p>${{ total_price }}</p>
+        </div>
+
+        <!-- Display delivery address -->
+        <div class="delivery-address">
+            <h3>Delivery Address:</h3>
+            <p>{{ delivery_address }}</p>
+        </div>
+
+        <!-- Display payment method -->
+        <div class="payment-method">
+            <h3>Payment Method:</h3>
+            <p>{{ payment_method }}</p>
+        </div>
+    </div>
+
+</body>
+</html>

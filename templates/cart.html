@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        header {
+            background-color: #f2f2f2;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center align content */
+        }
+
+        .product-card h3 {
+            margin-top: 0;
+        }
+
+        .product-card .description {
+            margin-bottom: 10px;
+        }
+
+        .product-card .price {
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        /* CSS for images */
+        .product-image {
+            max-width: 100%;
+            max-height: 200px; /* Set maximum height as needed */
+            margin-bottom: 10px; /* Optional: Add margin to separate image from other content */
+        }
+
+        /* Additional style for total bill */
+        .total-bill {
+            margin-bottom: 20px;
+            text-align: right;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Style for the bill table */
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bill-table th, .bill-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .bill-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>    
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="{{ url_for('register') }}">Register</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+            <li><a href="{{ url_for('cart') }}">Cart</a></li>
+            {% if session.username %}
+                <li style="float:right;"><a href="#">{{ session.username }}</a></li>
+                <li style="float:right;"><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    
+    <header>
+        <h1>Shopping Cart</h1>
+    </header>
+    
+    <div class="container">
+        <div class="products">
+            {% for product in cart_items %}
+            <div class="product-card">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image">
+                <h3>{{ product.name }}</h3>
+                <p class="description">{{ product.description }}</p>
+                <p class="price">Price: ${{ product.price }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+
+        <!-- Bill table -->
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in cart_items %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>${{ product.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Display total bill -->
+        <div class="total-bill">
+            <p>Total Bill: ${{ total_price }}</p>
+        </div>
+
+        <!-- Address input field -->
+        <form action="/order" method="post">
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" class="form-control" id="address" name="address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="payment-method">Payment Method:</label>
+                <select class="form-control" id="payment-method" name="payment_method">
+                    <option value="credit_card">Credit Card</option>
+                    <option value="paypal">PayPal</option>
+                    <option value="bank_transfer">Bank Transfer</option>
+                </select>
+            </div>
+            
+            <!-- Pass cart items as hidden input fields -->
+            {% for product in cart_items %}
+            <input type="hidden" name="product_name[]" value="{{ product.name }}">
+            <input type="hidden" name="product_description[]" value="{{ product.description }}">
+            <input type="hidden" name="product_price[]" value="{{ product.price }}">
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+        </form>        
+    </div>
+
+    <!-- <footer>
+        <p>&copy; 2024 E-Commerce Website. All rights reserved.</p>
+    </footer> -->
+</body>
+</html>

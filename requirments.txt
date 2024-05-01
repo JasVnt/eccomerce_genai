@@ -1,0 +1,5 @@
+flask_sqlalchemy
+phonenumbers
+twilio
+flask_testing
+pytest
