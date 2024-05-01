@@ -20,7 +20,7 @@ class TestUserRegistration(TestCase):
             response = client.post('/register', data=dict(
                 username='test_user',
                 password='test_password',
-                phone_number='9511261198'
+                phone_number=''
             ), follow_redirects=True)
             self.assertEqual(response.status_code, 200)
 
@@ -29,4 +29,4 @@ class TestUserRegistration(TestCase):
             user = User.query.filter_by(username='test_user').first()
             self.assertIsNotNone(user)
             self.assertEqual(user.username, 'test_user')
-            self.assertEqual(user.phone_number, '9511261198')
+            self.assertEqual(user.phone_number, '')

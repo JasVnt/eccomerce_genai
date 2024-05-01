@@ -12,7 +12,7 @@ class TestUserLogin(TestCase):
         db.create_all()
         # Create a test user for login testing
         from app import User
-        user = User(username='test_user', password='test_password', phone_number='9511261198')
+        user = User(username='test_user', password='test_password', phone_number='')
         db.session.add(user)
         db.session.commit()
 
